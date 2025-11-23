@@ -1,4 +1,3 @@
-use image::{GenericImageView, ImageReader, Rgba};
 use std::{env, error::Error};
 
 mod encoder;

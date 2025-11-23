@@ -18,8 +18,8 @@ impl ImageBuffer {
         let mut qoi_buffer = Vec::with_capacity((w * h * 4) as usize);
 
         let magic: [u8; 4] = *b"qoif";
-        let width: [u8; 4] = w.to_ne_bytes();
-        let height: [u8; 4] = h.to_ne_bytes();
+        let width: [u8; 4] = w.to_be_bytes();
+        let height: [u8; 4] = h.to_be_bytes();
         let channels: u8 = if image.has_alpha() { 4 } else { 3 };
         let colorspace: u8 = match image {
             DynamicImage::ImageRgb32F(_) | DynamicImage::ImageRgba32F(_) => 1,
