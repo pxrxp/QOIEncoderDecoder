@@ -10,13 +10,10 @@ const QOI_OP_RUN_TAG: u8 = 0b11 << 7;
 
 struct ImageBuffer {
     qoi_buffer: Vec<u8>,
-    image: DynamicImage,
 }
 
 impl ImageBuffer {
-    fn new(image_path: String) -> Self {
-        let reader = ImageReader::open(image_path).expect("Couldn't open file.");
-        let image = reader.decode().expect("Couldn't decode provided file.");
+    fn new(image: &DynamicImage) -> Self {
         let (w, h): (u32, u32) = image.dimensions();
 
         let mut qoi_buffer = Vec::with_capacity((w * h * 4) as usize);
@@ -36,7 +33,7 @@ impl ImageBuffer {
         qoi_buffer.push(channels);
         qoi_buffer.push(colorspace);
 
-        Self { qoi_buffer, image }
+        Self { qoi_buffer }
     }
 
     fn add_run_pixels(&mut self, run: u8) {
@@ -81,18 +78,21 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     match args.get(1).expect("Invalid no. of arguments").as_str() {
         "--encode" | "-e" => {
-            let filename = *args.get(2).expect("Image file not provided.");
-            let mut qoi_buffer = ImageBuffer::new(filename);
+            let image_path = args.get(2).expect("Image file not provided.");
+            let reader = ImageReader::open(image_path).expect("Couldn't open file.");
+            let image = reader.decode().expect("Couldn't decode provided file.");
 
+            let mut qoi_buffer = ImageBuffer::new(&image);
             let mut run_handler = RunHandler::new();
 
             let mut seen_pixels: Vec<Rgba<u8>> = Vec::with_capacity(64);
             let mut prev_pixel: Rgba<u8> = Rgba([0, 0, 0, 255]);
 
-            // for pixel in qoi_buffer.pixels() {
-
-            // if pixel
-            // }
+            for (_, _, pixel) in image.pixels() {
+                if run_handler.handle(&mut qoi_buffer, &pixel) {
+                    continue;
+                }
+            }
 
             qoi_buffer.end_byte_stream();
         }
