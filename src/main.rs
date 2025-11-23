@@ -41,6 +41,11 @@ impl ImageBuffer {
         self.qoi_buffer.push(QOI_OP_RUN_TAG | run);
     }
 
+    fn add_seen_pixel(&mut self, index: u8) {
+        assert!(index <= 63);
+        self.qoi_buffer.push(QOI_OP_INDEX_TAG | index);
+    }
+
     fn end_byte_stream(&mut self) {
         self.qoi_buffer.push(0x01);
         self.qoi_buffer.extend_from_slice(&[0x00; 7]);
@@ -73,6 +78,34 @@ impl RunHandler {
     }
 }
 
+struct SeenHandler {
+    seen_pixels: Vec<Rgba<u8>>,
+}
+
+impl SeenHandler {
+    fn new() -> Self {
+        Self {
+            seen_pixels: Vec::with_capacity(64),
+        }
+    }
+
+    fn handle(&mut self, qoi_buffer: &mut ImageBuffer, pixel: &Rgba<u8>) -> bool {
+        let [r, g, b, a] = pixel.0;
+        let hash = (r * 3 + g * 5 + b * 7 + a * 11) % 64;
+
+        if self
+            .seen_pixels
+            .get(hash as usize)
+            .is_some_and(|seen_px| seen_px == pixel)
+        {
+            qoi_buffer.add_seen_pixel(hash);
+            return true;
+        }
+
+        false
+    }
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
 
@@ -84,12 +117,14 @@ fn main() -> Result<(), Box<dyn Error>> {
 
             let mut qoi_buffer = ImageBuffer::new(&image);
             let mut run_handler = RunHandler::new();
-
-            let mut seen_pixels: Vec<Rgba<u8>> = Vec::with_capacity(64);
-            let mut prev_pixel: Rgba<u8> = Rgba([0, 0, 0, 255]);
+            let mut seen_handler = SeenHandler::new();
 
             for (_, _, pixel) in image.pixels() {
                 if run_handler.handle(&mut qoi_buffer, &pixel) {
+                    continue;
+                }
+
+                if seen_handler.handle(&mut qoi_buffer, &pixel) {
                     continue;
                 }
             }
