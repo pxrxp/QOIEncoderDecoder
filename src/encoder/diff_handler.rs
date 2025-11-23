@@ -1,4 +1,4 @@
-use super::qoi_encoder::QoiEncoder;
+use super::ImageBuffer;
 use image::Rgba;
 
 pub struct DiffHandler {
@@ -26,7 +26,7 @@ impl DiffHandler {
             && (db.wrapping_add(8) <= 15)
     }
 
-    pub fn handle(&mut self, qoi_buffer: &mut QoiEncoder, pixel: &Rgba<u8>, handled: &mut bool) {
+    pub fn handle(&mut self, qoi_buffer: &mut ImageBuffer, pixel: &Rgba<u8>, handled: &mut bool) {
         if !*handled {
             let [r, g, b, a] = pixel.0;
             let [r_prev, g_prev, b_prev, a_prev] = self.prev_pixel.0;

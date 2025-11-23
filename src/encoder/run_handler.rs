@@ -1,4 +1,4 @@
-use super::qoi_encoder::QoiEncoder;
+use super::ImageBuffer;
 use image::Rgba;
 
 pub struct RunHandler {
@@ -14,7 +14,7 @@ impl RunHandler {
         }
     }
 
-    pub fn handle(&mut self, qoi_buffer: &mut QoiEncoder, pixel: &Rgba<u8>, handled: &mut bool) {
+    pub fn handle(&mut self, qoi_buffer: &mut ImageBuffer, pixel: &Rgba<u8>, handled: &mut bool) {
         if !*handled {
             if *pixel == self.prev_pixel && self.run_length + 1 <= 62 {
                 self.run_length += 1;

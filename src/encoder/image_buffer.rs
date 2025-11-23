@@ -7,11 +7,11 @@ const QOI_OP_DIFF_TAG: u8 = 0b01 << 7;
 const QOI_OP_LUMA_TAG: u8 = 0b10 << 7;
 const QOI_OP_RUN_TAG: u8 = 0b11 << 7;
 
-pub struct QoiEncoder {
+pub struct ImageBuffer {
     qoi_buffer: Vec<u8>,
 }
 
-impl QoiEncoder {
+impl ImageBuffer {
     pub fn new(image: &DynamicImage) -> Self {
         let (w, h): (u32, u32) = image.dimensions();
 
@@ -80,5 +80,9 @@ impl QoiEncoder {
     pub fn end_byte_stream(&mut self) {
         self.qoi_buffer.push(0x01);
         self.qoi_buffer.extend_from_slice(&[0x00; 7]);
+    }
+
+    pub fn write(&self, output_path: &str) {
+        std::fs::write(output_path, &self.qoi_buffer).expect("Couldn't output to the file.");
     }
 }
