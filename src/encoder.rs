@@ -12,3 +12,4 @@ use run_handler::RunHandler;
 use seen_handler::SeenHandler;
 
 pub use qoi_encoder::encode;
+pub use qoi_encoder::encode_file;

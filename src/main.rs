@@ -1,5 +1,6 @@
 use std::{env, error::Error};
 
+mod decoder;
 mod encoder;
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -8,7 +9,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let output_image = args.get(3).expect("Image file not provided.");
 
     match args.get(1).expect("Invalid no. of arguments").as_str() {
-        "--encode" | "-e" => encoder::encode(&input_image).write(&output_image),
+        "--encode" | "-e" => encoder::encode_file(&input_image).write(&output_image),
 
         "--decode" | "-d" => {}
         "--help" | "-h" => {}

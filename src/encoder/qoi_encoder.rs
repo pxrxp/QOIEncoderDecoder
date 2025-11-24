@@ -1,11 +1,14 @@
 use super::{DiffHandler, ImageBuffer, NormalHandler, RunHandler, SeenHandler};
 
-use image::{GenericImageView, ImageReader};
+use image::{DynamicImage, GenericImageView, ImageReader};
 
-pub fn encode(image_path: &str) -> ImageBuffer {
+pub fn encode_file(image_path: &str) -> ImageBuffer {
     let reader = ImageReader::open(image_path).expect("Couldn't open file.");
     let image = reader.decode().expect("Couldn't decode provided file.");
+    encode(&image)
+}
 
+pub fn encode(image: &DynamicImage) -> ImageBuffer {
     let mut qoi_buffer = ImageBuffer::new(&image);
     let mut run_handler = RunHandler::new();
     let mut seen_handler = SeenHandler::new();
