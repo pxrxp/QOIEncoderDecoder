@@ -1,4 +1,6 @@
-mod qoi_decoder;
+mod chunks;
+mod core;
+mod header;
 
-pub use qoi_decoder::decode;
-pub use qoi_decoder::decode_file;
+pub use core::decode;
+pub use core::decode_file;

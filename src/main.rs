@@ -1,6 +1,7 @@
 mod decoder;
 mod encoder;
 mod errors;
+mod tags;
 
 fn main() -> Result<(), crate::errors::QOIError> {
     use crate::errors::QOIError;
@@ -53,7 +54,8 @@ fn main() -> Result<(), crate::errors::QOIError> {
             println!("    Path to the image file.");
             println!();
             println!("OUTPUT_FILE:");
-            println!("    Path to export image to.");
+            println!("    Path of image file to export to");
+            println!("    ( Will be overwritten if already exists )");
         }
 
         _ => panic!("Invalid command. Expected '--encode' or '--decode' or '--help'"),

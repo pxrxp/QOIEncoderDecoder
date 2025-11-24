@@ -1,8 +1,6 @@
-use crate::errors::QOIError;
-use image::DynamicImage;
-use std::fs;
+use crate::{decoder::chunks::chunk, errors::QOIError};
 
-struct QOIHeader {
+pub struct QOIHeader {
     width: u32,
     height: u32,
     channels: u8,
@@ -10,7 +8,7 @@ struct QOIHeader {
 }
 
 impl QOIHeader {
-    fn new<'a, I>(iter: &mut I) -> Result<Self, QOIError>
+    pub fn new<'a, I>(iter: &mut I) -> Result<Self, QOIError>
     where
         I: Iterator<Item = &'a u8>,
     {
@@ -48,24 +46,4 @@ impl QOIHeader {
             colorspace,
         })
     }
-}
-
-pub fn decode_file(image_path: &str) -> Result<Option<DynamicImage>, QOIError> {
-    let bytes: Vec<u8> = fs::read(image_path).map_err(|_| QOIError::FileReadError)?;
-    decode(&bytes)
-}
-
-pub fn decode(image_bytes: &Vec<u8>) -> Result<Option<DynamicImage>, QOIError> {
-    let mut iter = image_bytes.iter();
-
-    let header = QOIHeader::new(&mut iter)?;
-
-    Ok(None)
-}
-
-fn chunk<'a, I>(iter: &mut I, n: usize) -> Vec<u8>
-where
-    I: Iterator<Item = &'a u8>,
-{
-    iter.take(n).copied().collect()
 }
