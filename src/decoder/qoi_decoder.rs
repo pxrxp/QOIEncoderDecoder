@@ -50,25 +50,17 @@ impl QOIHeader {
     }
 }
 
-pub struct DecodedImage {
-    image: Option<DynamicImage>,
-    errors: Vec<String>,
-}
-
-pub fn decode_file(image_path: &str) -> Result<DecodedImage, QOIError> {
+pub fn decode_file(image_path: &str) -> Result<Option<DynamicImage>, QOIError> {
     let bytes: Vec<u8> = fs::read(image_path).map_err(|_| QOIError::FileReadError)?;
     decode(&bytes)
 }
 
-pub fn decode(image_bytes: &Vec<u8>) -> Result<DecodedImage, QOIError> {
+pub fn decode(image_bytes: &Vec<u8>) -> Result<Option<DynamicImage>, QOIError> {
     let mut iter = image_bytes.iter();
 
     let header = QOIHeader::new(&mut iter)?;
 
-    Ok(DecodedImage {
-        image: None,
-        errors: vec![],
-    })
+    Ok(None)
 }
 
 fn chunk<'a, I>(iter: &mut I, n: usize) -> Vec<u8>

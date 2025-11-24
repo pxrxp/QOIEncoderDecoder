@@ -1,6 +1,5 @@
+use crate::encoder::{DiffHandler, ImageBuffer, NormalHandler, RunHandler, SeenHandler};
 use crate::errors::QOIError;
-
-use super::{DiffHandler, ImageBuffer, NormalHandler, RunHandler, SeenHandler};
 
 use image::{DynamicImage, GenericImageView, ImageReader, Rgba};
 

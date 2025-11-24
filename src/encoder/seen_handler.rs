@@ -1,4 +1,4 @@
-use super::ImageBuffer;
+use crate::encoder::ImageBuffer;
 use image::Rgba;
 
 pub struct SeenHandler {
