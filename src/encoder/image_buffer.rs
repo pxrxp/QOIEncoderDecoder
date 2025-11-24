@@ -85,7 +85,6 @@ impl ImageBuffer {
     }
 
     pub fn write(&self, output_path: &str) -> Result<(), QOIError> {
-        std::fs::write(output_path, &self.qoi_buffer).map_err(|_| QOIError::FileWriteError);
-        Ok(())
+        std::fs::write(output_path, &self.qoi_buffer).map_err(|_| QOIError::FileWriteError)
     }
 }

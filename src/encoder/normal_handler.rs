@@ -1,25 +1,27 @@
 use super::ImageBuffer;
 use image::Rgba;
 
-pub struct NormalHandler {
-    has_alpha: bool,
-}
+pub struct NormalHandler;
 
 impl NormalHandler {
-    pub fn new(has_alpha: bool) -> Self {
-        Self { has_alpha }
+    pub fn new() -> Self {
+        Self
     }
 
     pub fn handle(&mut self, qoi_buffer: &mut ImageBuffer, pixel: &Rgba<u8>, handled: &mut bool) {
-        if !*handled {
-            let [r, g, b, a] = pixel.0;
-            if self.has_alpha {
-                qoi_buffer.add_rgba_pixel(r, g, b, a);
-                *handled = true;
-            } else {
-                qoi_buffer.add_rgb_pixel(r, g, b);
-                *handled = true;
-            }
+        if *handled {
+            return;
+        }
+
+        let [r, g, b, a] = pixel.0;
+        let [_, _, _, a_prev] = pixel.0;
+
+        if a == a_prev {
+            qoi_buffer.add_rgb_pixel(r, g, b);
+            *handled = true;
+        } else {
+            qoi_buffer.add_rgba_pixel(r, g, b, a);
+            *handled = true;
         }
     }
 }

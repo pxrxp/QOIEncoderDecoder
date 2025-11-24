@@ -32,10 +32,8 @@ pub fn decode(image_bytes: &Vec<u8>) -> Result<DecodedImage, QOIError> {
     let colorspace = iter.next().unwrap();
 
     assert_eq!(magic_chunks, b"qoif");
-    println!("Width: {width}");
-    println!("Height: {height}");
-    println!("Channels: {channels}");
-    println!("Colorspace: {colorspace}");
+    assert!(*channels == 3 || *channels == 4);
+    assert!(*colorspace == 0 || *colorspace == 1);
 
     Ok(DecodedImage {
         image: None,
