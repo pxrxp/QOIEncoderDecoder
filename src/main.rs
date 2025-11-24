@@ -17,7 +17,9 @@ fn main() -> Result<(), crate::errors::QOIError> {
         "--encode" | "-e" => encoder::encode_file(&input_image_path)?.write(&output_image_path)?,
 
         "--decode" | "-d" => decoder::decode_file(&input_image_path)?
-            .unwrap()
+            .ok_or(QOIError::ImageDecodeError(
+                "QOI Header verified, Image invalid".to_owned(),
+            ))?
             .save(output_image_path)
             .map_err(|_| QOIError::FileWriteError)?,
 
