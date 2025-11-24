@@ -1,7 +1,11 @@
 mod decoder;
 mod encoder;
 mod errors;
+mod state;
 mod tags;
+
+use errors::QOIError;
+use state::QOIState;
 
 fn main() -> Result<(), crate::errors::QOIError> {
     use crate::errors::QOIError;

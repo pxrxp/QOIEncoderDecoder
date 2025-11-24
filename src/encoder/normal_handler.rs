@@ -1,27 +1,17 @@
-use crate::encoder::ImageBuffer;
+use crate::{encoder::ImageBuffer, state::QOIState};
 use image::Rgba;
 
-pub struct NormalHandler;
+pub fn handle(qoi_buffer: &mut ImageBuffer, state: &mut QOIState, pixel: &Rgba<u8>) -> bool {
+    let [r, g, b, a] = pixel.0;
+    let [_, _, _, a_prev] = state.prev_pixel.0;
 
-impl NormalHandler {
-    pub fn new() -> Self {
-        Self
+    if a == a_prev {
+        qoi_buffer.add_rgb_pixel(r, g, b);
+        return true;
+    } else {
+        qoi_buffer.add_rgba_pixel(r, g, b, a);
+        return true;
     }
 
-    pub fn handle(&mut self, qoi_buffer: &mut ImageBuffer, pixel: &Rgba<u8>, handled: &mut bool) {
-        if *handled {
-            return;
-        }
-
-        let [r, g, b, a] = pixel.0;
-        let [_, _, _, a_prev] = pixel.0;
-
-        if a == a_prev {
-            qoi_buffer.add_rgb_pixel(r, g, b);
-            *handled = true;
-        } else {
-            qoi_buffer.add_rgba_pixel(r, g, b, a);
-            *handled = true;
-        }
-    }
+    false
 }

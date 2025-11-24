@@ -1,7 +1,5 @@
+use crate::{errors::QOIError, tags};
 use image::{DynamicImage, GenericImageView};
-
-use crate::errors::QOIError;
-use crate::tags;
 
 pub struct ImageBuffer {
     qoi_buffer: Vec<u8>,

@@ -4,8 +4,8 @@ pub enum PixelChunk {
     RGB(u8, u8, u8),
     RGBA(u8, u8, u8, u8),
     Index(u8),
-    Diff { dr: u8, dg: u8, db: u8 },
-    Luma { dg: u8, dr_dg: u8, db_dg: u8 },
+    Diff(u8, u8, u8),
+    Luma(u8, u8, u8),
     Run(u8),
 }
 
@@ -24,16 +24,16 @@ where
             *iter.next()?,
         )),
         tags::QOI_OP_INDEX_TAG => Some(PixelChunk::Index(*iter.next()?)),
-        tags::QOI_OP_DIFF_TAG => Some(PixelChunk::Diff {
-            dr: *iter.next()?,
-            dg: *iter.next()?,
-            db: *iter.next()?,
-        }),
-        tags::QOI_OP_LUMA_TAG => Some(PixelChunk::Luma {
-            dg: *iter.next()?,
-            dr_dg: *iter.next()?,
-            db_dg: *iter.next()?,
-        }),
+        tags::QOI_OP_DIFF_TAG => Some(PixelChunk::Diff(
+            *iter.next()?,
+            *iter.next()?,
+            *iter.next()?,
+        )),
+        tags::QOI_OP_LUMA_TAG => Some(PixelChunk::Luma(
+            *iter.next()?,
+            *iter.next()?,
+            *iter.next()?,
+        )),
         tags::QOI_OP_RUN_TAG => Some(PixelChunk::Run(*iter.next()?)),
         _ => None,
     }
