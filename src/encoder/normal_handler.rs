@@ -7,11 +7,8 @@ pub fn handle(qoi_buffer: &mut ImageBuffer, state: &mut QOIState, pixel: &Rgba<u
 
     if a == a_prev {
         qoi_buffer.add_rgb_pixel(r, g, b);
-        return true;
     } else {
         qoi_buffer.add_rgba_pixel(r, g, b, a);
-        return true;
     }
-
-    false
+    return true;
 }
