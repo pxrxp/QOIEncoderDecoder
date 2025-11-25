@@ -27,19 +27,19 @@ where
         _ => match *tag & 0b11000000 {
             tags::QOI_OP_INDEX_TAG => Some(PixelChunk::Index(*tag & 0b00111111)),
             tags::QOI_OP_DIFF_TAG => Some(PixelChunk::Diff(
-                (*tag & 0b00110000) >> 4,
-                (*tag & 0b00001100) >> 2,
-                *tag & 0b00000011,
+                ((*tag & 0b00110000) >> 4).wrapping_sub(2),
+                ((*tag & 0b00001100) >> 2).wrapping_sub(2),
+                (*tag & 0b00000011).wrapping_sub(2),
             )),
             tags::QOI_OP_LUMA_TAG => {
                 let next_byte = *iter.next()?;
                 Some(PixelChunk::Luma(
-                    *tag & 0b00111111,
-                    (next_byte & 0b11110000) >> 4,
-                    next_byte & 0b00001111,
+                    (*tag & 0b00111111).wrapping_sub(32),
+                    ((next_byte & 0b11110000) >> 4).wrapping_sub(8),
+                    (next_byte & 0b00001111).wrapping_sub(8),
                 ))
             }
-            tags::QOI_OP_RUN_TAG => Some(PixelChunk::Run(*tag & 0b00111111)),
+            tags::QOI_OP_RUN_TAG => Some(PixelChunk::Run((*tag & 0b00111111).wrapping_add(1))),
             _ => None,
         },
     }
