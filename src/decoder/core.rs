@@ -28,7 +28,6 @@ pub fn decode(image_bytes: &Vec<u8>) -> Result<DynamicImage, QOIError> {
     let mut state = QOIState::new();
 
     while let Some(pixel_chunk) = decode_pixel(&mut iter) {
-        println!("{:?}", pixel_chunk);
         let pixels = match pixel_chunk {
             PixelChunk::RGB(r, g, b) => {
                 let Rgba([_, _, _, a_prev]) = state.prev_pixel;
